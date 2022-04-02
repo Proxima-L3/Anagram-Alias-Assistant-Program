@@ -1,0 +1,57 @@
+#### Sample run v1.0 ####
+
+
+
+
+Anagram Alias Assistant (AAA)
+
+(press Enter to continue)
+
+{cls}
+1: Make an Anagram!
+2: Quit
+
+
+
+
+#(option 1 pathway)
+
+{cls}
+Enter word or phrase to be anagrammed: Lean back and breathe
+
+	Advanced options? (y/n)
+#	(if y is chosen...)
+
+{cls}
+Enter word or phrase to be anagrammed: Lean back and breathe
+
+	How many common letters should be in the anagram (enter nothing if you want only true anagrams): 8
+
+{cls}
+Word/Phrase: Lean back and breathe
+Common letters: 8
+Database used: (url)
+
+
+
+Anagrams Found: 15
+
+# (I know these are not even close to being anagrams but that's the whole point of the program)
+Apollo
+Apollodorus
+Apollonis
+Apotheosis
+Apotropaic magic
+Apple of Discord
+Aquatic deities
+Ara
+Arabian
+Arachne
+Arae
+Aratus
+Arcadia
+Arcadian Mysteries
+Arcesilaus
+
+
+(Press enter to return to the main menu)
