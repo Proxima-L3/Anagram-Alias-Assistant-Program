@@ -1,7 +1,10 @@
 # ******************************************************************************
 # Author:           Proxima-L3
-# Date:             April 3, 2022
-# Project Name:     Anagram Alias Assistant Program (AAAP) v1.0
+# Date:             April 5, 2022
+# Project Name:     Anagram Alias Assistant Program (AAAP) v1.1
+# Update Summary:	Added line that imports lxml. Fixed program breaking bug that
+# 					caused non anagrams to appear in the anagram results shown.
+# 					Other minor ui changes.
 # Description:      A program that uses web scraping to make lists of names
 #                   from websites and uses them to help the user create anagrams.
 # Goal/purpose:     Learn how to use web scraping, practice searching for and
@@ -9,7 +12,7 @@
 #                   in my algorithm, refresh my programming skills after being
 #                   away from it for over a year, create a tool that has potential
 #                   use in the future,
-# Sources:          (https://en.wikipedia.org/wiki/List_of_Greek_mythological_figures),
+# Sources:          (https://en.wikipedia.org/wiki/List_of_Greek_mythological_figures)
 #                   (https://www.anagrammer.com/)
 #                   (https://www.coolgenerator.com/anagram-name-generator)
 #
@@ -18,20 +21,20 @@
 #                   (https://www.w3schools.com/python/python_tuples_unpack.asp)
 #                   (https://www.educative.io/edpresso/how-to-find-the-length-of-a-string-in-python)
 #                   (https://www.pythonpool.com/python-check-if-string-is-integer/)
-#                   (And minimal review from one of my Udemy courses)
+#                   (Minimal review from one of my Udemy courses)
+#					(https://softwareengineering.stackexchange.com/questions/3199/what-version-naming-convention-do-you-use?newreg=986f6d522b3d47478c0bef9677b24198)
 # ******************************************************************************
 
 
 import requests
 import bs4
+import lxml
 import bisect
-
-
 
 
 # This function ties all other functions together to make one coherent program
 def main():
-    intro()
+	intro()
 	# while loop continuously checking to see what menu_choice the user picked
 	while True:
 		menu_choice = main_menu()
@@ -53,12 +56,13 @@ def intro():
 	user_choice = ''
 
 	while True:
-		user_choice = input("Anagram Alias Assistant Program (AAAP)\n\n(press any key to continue)")
+		user_choice = input("Anagram Alias Assistant Program (AAAP)\n\n(press enter to continue)")
 		if user_choice != '' or user_choice == '':
 			break
 		else:
 			pass
-    print("\033[H\033[J")
+	print("\033[H\033[J")
+
 
 # This function displays the main menu
 def main_menu():
@@ -69,12 +73,13 @@ def main_menu():
 
 	while True:
 		menu_choice = input("")
-		if menu_choice in ['1','2']:
+		if menu_choice in ['1', '2']:
 			return menu_choice
 		else:
 			print("Invalid input. Try again.\n")
 
-# Temporary function that will be replaced with a file call. The external file will essentially be a database of all the colleted names/figures/etc that have been scraped from websites
+
+# Temporary function that will be replaced with a file call. The external file will essentially be a database of all the collected names/figures/etc that have been scraped from websites
 def temp_wiki_scrape_list_func():
 	url_used = "https://en.wikipedia.org/wiki/List_of_Greek_mythological_figures"
 
@@ -89,10 +94,10 @@ def temp_wiki_scrape_list_func():
 
 	keyword_gibberish_list = ['',' ','q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m',"'",'`','~','!','@','#','$','%','^','&','*','(',')','-','=','_','+','[',']','{','}','|',';',':','"',',','.','/','<','>','?']
 	filtered_atag_list = []
-	int_list = [1,2,3,4,5,6,7,8,9,0]
+	int_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
 	has_int = False
 
-    # for loop with several if statements that filter out the unwanted things in my code, specifically names with ints, single letters, and repeats of names
+	# for loop with several if statements that filter out the unwanted things in my code, specifically names with ints, single letters, and repeats of names
 	for item in raw_atag_list:
 		item = item.getText()
 
@@ -103,7 +108,7 @@ def temp_wiki_scrape_list_func():
 			else:
 				has_int = False
 
-		if has_int == True:
+		if has_int:
 			continue
 		elif item.lower() in keyword_gibberish_list:
 			continue
@@ -114,9 +119,10 @@ def temp_wiki_scrape_list_func():
 
 	return url_used, filtered_atag_list
 
+
 # This function is the main function used to assist the user in collecting necessary information that will be used to make their anagrammed alias
 def anagram_assistant():
-    print("\033[H\033[J")
+	print("\033[H\033[J")
 
 	pre_anagram = ''
 	adv_op_choice = ''
@@ -143,6 +149,7 @@ def anagram_assistant():
 		else:
 			print("Invalid input")
 
+
 # This function takes in user input regarding how many letters the user entered word/phrase and the anagram should have in common... MAYBE MAKE THIS A DECORATOR FOR THE ANAGRAM ASSISTANT FUNCTION...
 def common_letters():
 	print("\033[H\033[J")
@@ -156,6 +163,7 @@ def common_letters():
 		else:
 			print("Invalid input\n\n")
 
+
 # function that takes in the url used, the list or database of names, the pre_anagram string, and a list of variables representing the choices made by the user in the advanced options section and uses that information to generate a list of possible anagrams/aliases
 def anagram_generator(url_used, list_of_names, pre_anagram, adv_op_list):
 
@@ -168,13 +176,13 @@ def anagram_generator(url_used, list_of_names, pre_anagram, adv_op_list):
 	# for loop used as outer layer of nested for loop to iterate through list_of_names list and create another list that holds the number of letters that the pre_anagram and each name in list_of_names have in common. (the index location of each item in list_of_names and each item in number_of_common_letters_list should be the same... although, in the future, we may want to figure out how to use a dictionary to do this whole process)
 	for name in list_of_names:
 
-		name_for_iterating = name.replace(' ', '')
-		pre_anagram_for_iterating = pre_anagram.replace(' ', '')
+		name_for_iterating = name.replace(' ', '').lower()
+		pre_anagram_for_iterating = pre_anagram.replace(' ', '').lower()
 		counter1 = 0
 
 		# nested for loop used for checking how many letters pre_anagram and the current name (from list of names) have in common
 		for letter in pre_anagram_for_iterating:
-			if letter.lower() in name_for_iterating.lower():
+			if letter in name_for_iterating:
 				pre_anagram_for_iterating = pre_anagram_for_iterating.replace(letter, '', 1)
 				counter1 += 1
 				name_for_iterating = name_for_iterating.replace(letter, '', 1)
@@ -185,7 +193,7 @@ def anagram_generator(url_used, list_of_names, pre_anagram, adv_op_list):
 		number_of_common_letters_list.append(counter1)
 
 		# this line takes the current "name string" being iterated through, gets rid of its spaces, and compares its remaining length to the remaining length of pre_anagram. if they are the same, it adds the current name being iterated through to a perfect anagram list
-		if len(name_for_iterating) == len(pre_anagram_for_iterating):
+		if name_for_iterating == '' and pre_anagram_for_iterating == '':
 			perfect_anagram_list.append(name)
 		else:
 			pass
@@ -217,6 +225,7 @@ def anagram_generator(url_used, list_of_names, pre_anagram, adv_op_list):
 		for item in adv_op0_anagram_list:
 			print(item)
 
+
 # this function keeps the user on the same screen until they decide they want to go back to the main menu
 def return_to_menu():
 	user_choice = ''
@@ -227,8 +236,6 @@ def return_to_menu():
 			break
 		else:
 			print("Invalid input")
-
-
 
 
 main()
